@@ -13,7 +13,7 @@ with open(secret_file) as f:
 
 def get_secret(setting, secrets=secrets):
     try:
-        return secrets[setting]
+        return secrets['naver'][setting]
     except KeyError:
         error_msg = "Set the {} environment variable".format(setting)
         raise ImproperlyConfigured(error_msg)

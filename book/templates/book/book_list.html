@@ -1,0 +1,17 @@
+{% extends 'book/base.html' %}
+{% load index_tag %}
+
+{% block title %}
+소설 분야 베스트셀러
+{% endblock %}
+
+{% block content %}
+<div class="row">
+  {% for title in title_list %}
+  <div class="col">
+    <h5 class="mt-4"><strong>{{forloop.counter}}</strong>. {{title}}</h5>
+    <p><img src="{{ book_img_src|get_at_index:forloop.counter0 }}"></p>
+  </div>
+  {% endfor %}
+</div>
+{% endblock %}

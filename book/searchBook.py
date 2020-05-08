@@ -8,6 +8,7 @@ bsObject = bs(novelBest_html, "html.parser")
 week_standard = bsObject.find('h4', {'class':'title_best_basic'}).find('small').text
 bestseller_contents = bsObject.find('ul', {'class':'list_type01'})
 bestseller_list = bestseller_contents.findAll('div', {'class':'detail'})
+
 title_list = [b.find('div', {'class': 'title'}).find('strong').text for b in bestseller_list]
 book_img_src = [t.find('img')['src'] for t in bestseller_contents.findAll('div', {'class': 'cover'})]
 subtitle_list = [b.find('div', {'class': 'subtitle'}).text.strip() for b in bestseller_list]
