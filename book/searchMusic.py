@@ -22,16 +22,25 @@ def get_secret(setting, secrets=secrets):
 client_id = get_secret("CLIENT_ID")
 client_secret = get_secret("CLIENT_SECRET")
 
-lz_uri = 'spotify:artist:6VuMaDnrHyPL1p4EHjYLi7' # Charlie Puth
+lz_uri = 'spotify:playlist:37i9dQZEVXbMDoHDwVN2tF?si=w-CyWFTgSy-citDFPA8hpw' # Global top 50
 
 client_credentials_manager = SpotifyClientCredentials(client_id=client_id, client_secret=client_secret)
 sp = spotipy.Spotify(client_credentials_manager=client_credentials_manager)
 
-results = sp.artist_top_tracks(lz_uri)
+results = sp.playlist_tracks(lz_uri)
 
-# get top 10 tracks
-for track in results['tracks'][:10]:
-    print('track    : ' + track['name'])
-    print('audio    : ' + track['preview_url'])
-    print('cover art: ' + track['album']['images'][0]['url'])
-    print()
+name = []
+artists = []
+cover_img = []
+for track in results['tracks']['items'][:20]:
+    name.append(track['track']['name'])
+    artists.append([ i['name'] for i in track['track']['artists'] ])
+    cover_img.append(track['track']['album']['images'][1]['url'])
+
+# for track in results['tracks']['items'][:20]:
+#     print('track    : ' + track['track']['name'])
+#     print('artists   : ', end='')
+#     for i in track['track']['artists']:
+#         print(i['name'], end=', ')
+#     print('\ncover art: ' + track['track']['album']['images'][1]['url'])
+#     print('\n')
