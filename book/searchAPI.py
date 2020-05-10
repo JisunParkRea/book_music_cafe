@@ -21,9 +21,10 @@ def get_secret(setting, secrets=secrets):
 client_id = get_secret("CLIENT_ID")
 client_secret = get_secret("CLIENT_SECRET")
 
-search_word = "파이썬" # 검색 단어
+search_word = "개롱역" # 검색 단어
+search_word += "카페"
 encText = urllib.parse.quote(search_word)
-url = "https://openapi.naver.com/v1/search/book?query=" + encText +"&display=3&sort=count" # json 결과
+url = "https://openapi.naver.com/v1/search/local?query=" + encText + "&display=5&sort=comment" # json 결과
 request = urllib.request.Request(url)
 request.add_header("X-Naver-Client-Id",client_id)
 request.add_header("X-Naver-Client-Secret",client_secret)
