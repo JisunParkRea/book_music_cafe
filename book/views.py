@@ -4,6 +4,7 @@ from django.template import loader
 
 from .searchBook import title_list, subtitle_list, book_img_src
 from .searchMusic import name, artists, cover_img
+from .searchAPI import search_local_cafe
 
 
 def index(request):
@@ -36,7 +37,20 @@ def music_list(request):
 
 def cafe_list(request):
     template = loader.get_template('book/cafe_list.html')
+
+    cafe_list = []
+    search_key = request.GET.get('search_key') # 검색어 가져오기
+    if search_key: # 만약 검색어가 존재하면
+        cafe_list = search_local_cafe(search_key)
+
+    cafe_title = []
+    cafe_addr = []
+    for cafe in cafe_list:
+        cafe_title.append(cafe['title'])
+        cafe_addr.append(cafe['address'])
+
     context = {
-        'title_list': title_list,
+        'cafe_title': cafe_title,
+        'cafe_addr': cafe_addr,
     }
     return HttpResponse(template.render(context, request))
