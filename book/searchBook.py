@@ -18,4 +18,4 @@ subtitle_list = [b.find('div', {'class': 'subtitle'}).text.strip() for b in best
 #     print("Title: "+title_list[i])
 #     print("Description: "+subtitle_list[i]+"\n")
 
-print(book_img_src[0])
+#print(book_img_src[0])

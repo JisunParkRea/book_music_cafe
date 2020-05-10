@@ -8,7 +8,7 @@ Global TOP 20 음악
 {% block content %}
 <div class="row">
   {% for n in name %}
-  <div class="col-4">
+  <div class="col">
     <h5 class="mt-4"><strong>{{forloop.counter}}</strong>. {{n}}</h5>
     <h6>
     {% for i in artists|get_at_index:forloop.counter0 %}
