@@ -45,12 +45,15 @@ def cafe_list(request):
 
     cafe_title = []
     cafe_addr = []
+    cafe_link = []
     for cafe in cafe_list:
         cafe_title.append(cafe['title'])
         cafe_addr.append(cafe['address'])
+        cafe_link.append(cafe['link'])
 
     context = {
         'cafe_title': cafe_title,
         'cafe_addr': cafe_addr,
+        'cafe_link': cafe_link,
     }
     return HttpResponse(template.render(context, request))
