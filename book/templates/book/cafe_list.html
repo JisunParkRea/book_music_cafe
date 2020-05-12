@@ -49,13 +49,18 @@
             var addr = {{ cafe_addr| safe }};
             var titles = {{ cafe_title| striptags | safe }};
 
-            for (var i = 0; i < addr.length; i++) {
+            function f1() {
+                for (var i = 0; i < addr.length; i++) {
+                    f2(i);
+                }
+            }
 
+            function f2(i) {
                 // 주소로 좌표를 검색합니다
                 geocoder.addressSearch(addr[i], function (result, status) {
                     // 정상적으로 검색이 완료됐으면 
                     if (status === kakao.maps.services.Status.OK) {
-
+                        console.log(i);
                         var coords = new kakao.maps.LatLng(result[0].y, result[0].x);
 
                         // 결과값으로 받은 위치를 마커로 표시합니다
@@ -66,22 +71,51 @@
                         });
 
                         // // 인포윈도우로 장소에 대한 설명을 표시합니다
-                        // var infowindow = new kakao.maps.InfoWindow({
-                        //     content: '<div style="width:150px;text-align:center;padding:6px 0;">' + "여기여기" + '</div>'
-                        // });
-                        // infowindow.open(map, marker);
+                        var infowindow = new kakao.maps.InfoWindow({
+                            content: '<div style="width:150px;text-align:center;padding:6px 0;">' + titles[i] + '</div>'
+                        });
+
+                        infowindow.open(map, marker);
 
                         // 지도의 중심을 결과값으로 받은 위치로 이동시킵니다
                         map.setCenter(coords);
                     }
+
                 });
-
             }
+            f1();
 
-            for (var i = 0; i < titles.length; i++) {
+            // var j = 0;
+            // for (var i = 0; i < addr.length; i++) {
+            //     console.log(i);
+            //     // 주소로 좌표를 검색합니다
+            //     geocoder.addressSearch(addr[i], function (result, status) {
+            //         // 정상적으로 검색이 완료됐으면 
+            //         if (status === kakao.maps.services.Status.OK) {
+            //             console.log(i);
+            //             var coords = new kakao.maps.LatLng(result[0].y, result[0].x);
 
-            }
+            //             // 결과값으로 받은 위치를 마커로 표시합니다
+            //             var marker = new kakao.maps.Marker({
+            //                 map: map,
+            //                 position: coords,
+            //                 title: result[0].address_name
+            //             });
 
+            //             // // 인포윈도우로 장소에 대한 설명을 표시합니다
+            //             var infowindow = new kakao.maps.InfoWindow({
+            //                 content: '<div style="width:150px;text-align:center;padding:6px 0;">' + titles[j++] + '</div>'
+            //             });
+
+            //             infowindow.open(map, marker);
+
+            //             // 지도의 중심을 결과값으로 받은 위치로 이동시킵니다
+            //             map.setCenter(coords);
+            //         }
+
+            //     });
+
+            // }
 
         </script>
     </div>
