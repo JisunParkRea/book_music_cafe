@@ -1,5 +1,9 @@
 from django.db import models
 
-class Book(models.Model):
+class BookRank1(models.Model):
     title = models.CharField(max_length=100)
-    summary = models.TextField()
+
+class Music(models.Model):
+    title = models.CharField(max_length=100)
+    artist = models.CharField(max_length=50)
+    cover_img = models.CharField(max_length=100)

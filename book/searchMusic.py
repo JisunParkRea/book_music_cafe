@@ -4,6 +4,8 @@ import spotipy
 import pprint
 from django.core.exceptions import ImproperlyConfigured
 
+from .models import Music
+
 
 # Get CLIENT_ID, CLIENT_SECRET from secrets.json
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -23,6 +25,7 @@ client_id = get_secret("CLIENT_ID")
 client_secret = get_secret("CLIENT_SECRET")
 
 lz_uri = 'spotify:playlist:37i9dQZEVXbMDoHDwVN2tF?si=w-CyWFTgSy-citDFPA8hpw' # Global top 50
+#lz_uri = 'spotify:playlist:37i9dQZEVXbLRQDuF5jeBp?si=mUMcqtGMREySk1SLIUfY5Q' # United States top 50
 
 client_credentials_manager = SpotifyClientCredentials(client_id=client_id, client_secret=client_secret)
 sp = spotipy.Spotify(client_credentials_manager=client_credentials_manager)
@@ -36,6 +39,15 @@ for track in results['tracks']['items'][:20]:
     name.append(track['track']['name'])
     artists.append([ i['name'] for i in track['track']['artists'] ])
     cover_img.append(track['track']['album']['images'][1]['url'])
+
+try:
+    music = Music.objects.get(title=name[0])
+except:
+    left = Music.objects.all()
+    left.delete()
+    music = Music(title=name[0], artist=artists[0][0], cover_img=cover_img[0])
+    music.save()
+
 
 # for track in results['tracks']['items'][:20]:
 #     print('track    : ' + track['track']['name'])
