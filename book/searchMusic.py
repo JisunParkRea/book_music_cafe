@@ -4,7 +4,7 @@ import spotipy
 import pprint
 from django.core.exceptions import ImproperlyConfigured
 
-from .models import Music
+from .models import MusicRank1
 
 
 # Get CLIENT_ID, CLIENT_SECRET from secrets.json
@@ -41,18 +41,14 @@ for track in results['tracks']['items'][:20]:
     cover_img.append(track['track']['album']['images'][1]['url'])
 
 try:
-    music = Music.objects.get(title=name[0])
+    music = MusicRank1.objects.get(title=name[0])
 except:
-    left = Music.objects.all()
+    left = MusicRank1.objects.select_related('title').all()
     left.delete()
-    music = Music(title=name[0], artist=artists[0][0], cover_img=cover_img[0])
+    music = MusicRank1(title=name[0], artist=artists[0][0], cover_img=cover_img[0])
     music.save()
 
+    from .slackBot import slack
 
-# for track in results['tracks']['items'][:20]:
-#     print('track    : ' + track['track']['name'])
-#     print('artists   : ', end='')
-#     for i in track['track']['artists']:
-#         print(i['name'], end=', ')
-#     print('\ncover art: ' + track['track']['album']['images'][1]['url'])
-#     print('\n')
+    # Send a message to #general channel
+    slack.chat.post_message('C013UEVAZL0', 'Rank Changed!')

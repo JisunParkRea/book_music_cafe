@@ -3,7 +3,7 @@ from django.http import HttpResponse
 from django.template import loader
 
 from .searchBook import title_list, subtitle_list, book_img_src
-#from .searchMusic import name, artists, cover_img, music
+from .searchMusic import name, artists, cover_img
 from .searchAPI import search_local_cafe
 
 
@@ -27,14 +27,10 @@ def book_list(request):
 
 def music_list(request):
     template = loader.get_template('book/music_list.html')
-    
-    from .searchMusic import name, artists, cover_img, music
-
     context = {
         'name': name,
         'artists': artists,
         'cover_img': cover_img,
-        'music': music.title,
     }
     return HttpResponse(template.render(context, request))
 
