@@ -6,6 +6,9 @@ from django.core.exceptions import ImproperlyConfigured
 
 from .models import MusicRank1
 
+from .slackBot import slack
+from apscheduler.schedulers.background import BackgroundScheduler
+
 
 # Get CLIENT_ID, CLIENT_SECRET from secrets.json
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -24,31 +27,39 @@ def get_secret(setting, secrets=secrets):
 client_id = get_secret("CLIENT_ID")
 client_secret = get_secret("CLIENT_SECRET")
 
-lz_uri = 'spotify:playlist:37i9dQZEVXbMDoHDwVN2tF?si=w-CyWFTgSy-citDFPA8hpw' # Global top 50
-#lz_uri = 'spotify:playlist:37i9dQZEVXbLRQDuF5jeBp?si=mUMcqtGMREySk1SLIUfY5Q' # United States top 50
-
-client_credentials_manager = SpotifyClientCredentials(client_id=client_id, client_secret=client_secret)
-sp = spotipy.Spotify(client_credentials_manager=client_credentials_manager)
-
-results = sp.playlist_tracks(lz_uri)
-
 name = []
 artists = []
 cover_img = []
-for track in results['tracks']['items'][:20]:
-    name.append(track['track']['name'])
-    artists.append([ i['name'] for i in track['track']['artists'] ])
-    cover_img.append(track['track']['album']['images'][1]['url'])
 
-try:
-    music = MusicRank1.objects.get(title=name[0])
-except:
-    left = MusicRank1.objects.select_related('title').all()
-    left.delete()
-    music = MusicRank1(title=name[0], artist=artists[0][0], cover_img=cover_img[0])
-    music.save()
+def musicChartCheck(): 
+    lz_uri = 'spotify:playlist:37i9dQZEVXbMDoHDwVN2tF?si=w-CyWFTgSy-citDFPA8hpw' # Global top 50
+    #lz_uri = 'spotify:playlist:37i9dQZEVXbLRQDuF5jeBp?si=mUMcqtGMREySk1SLIUfY5Q' # United States top 50
 
-    from .slackBot import slack
+    client_credentials_manager = SpotifyClientCredentials(client_id=client_id, client_secret=client_secret)
+    sp = spotipy.Spotify(client_credentials_manager=client_credentials_manager)
 
-    # Send a message to #general channel
-    slack.chat.post_message('C013UEVAZL0', 'Rank Changed!')
+    results = sp.playlist_tracks(lz_uri)
+
+    for track in results['tracks']['items'][:20]:
+        name.append(track['track']['name'])
+        artists.append([ i['name'] for i in track['track']['artists'] ])
+        cover_img.append(track['track']['album']['images'][1]['url'])
+
+    try:
+        music = MusicRank1.objects.get(title=name[0])
+
+        # Send a message to #general channel
+        slack.chat.post_message('C013UEVAZL0', 'No Change')
+    except:
+        left = MusicRank1.objects.select_related('title').all()
+        left.delete()
+        music = MusicRank1(title=name[0], artist=artists[0][0], cover_img=cover_img[0])
+        music.save()
+
+        # Send a message to #general channel
+        slack.chat.post_message('C013UEVAZL0', 'Rank Changed')
+
+musicChartCheck() # 한번 실행 하고
+sched = BackgroundScheduler()
+sched.add_job(musicChartCheck, 'interval', seconds=10) # 테스트로 10초에 한번씩
+sched.start()
