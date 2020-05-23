@@ -10,7 +10,10 @@ from .searchAPI import search_local_cafe
 def index(request):
     template = loader.get_template('book/index.html')
     context = {
-        'title_list': title_list,
+        'num1_book_title': title_list[0],
+        'num1_book_img': book_img_src[0],
+        'num1_music_title': name[0],
+        'num1_music_img': cover_img[0],
     }
     return HttpResponse(template.render(context, request))
 
